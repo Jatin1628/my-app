@@ -88,9 +88,9 @@ export function LoginForm({
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.svg"
+              src="https://reply.io/wp-content/uploads/Virtual-AI-assistant.png"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              className="absolute inset-0 h-full w-full object-cover  "
             />
           </div>
         </CardContent>
