@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero';
 
+
 const Page = () => {
   const [isClient, setIsClient] = useState(false);
 
@@ -10,9 +11,11 @@ const Page = () => {
     setIsClient(true);
   }, []);
 
+
+
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
       <Hero />
       {isClient && (
         <div>

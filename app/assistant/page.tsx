@@ -1,18 +1,30 @@
+"use client"
+import Navbar from "@/components/Navbar";
 import ChatTranscript from "@/components/Transcript";
 import VideoComponent from "@/components/VideoComponent";
-import { Video } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 import React from "react";
 
 const page = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (!session) {
+      router.push("/");
+    }
+  }, [session, router]);
   return (
-    <div className="w-full h-screen overflow-y-scroll">
+    <div className="w-[90%] h-screen mx-auto">
+      <Navbar />
       <div>
         <h1 className="font-semibold text-xl mt-5 m-3">Hello, User</h1>
       </div>
 
-      <div className="flex h-screen">
+      <div className="flex h-full">
         <VideoComponent />
-
         <ChatTranscript />
       </div>
     </div>

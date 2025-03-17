@@ -1,160 +1,145 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+"use client";
+import React from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import Link from 'next/link'
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const pages = ['Home', 'About', 'Contact'];
+const Navbar = () => {
+  const [expanded, setExpanded] = useState(false);
+  const { data: session } = useSession();
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
+  const toggleMenu = () => {
+    setExpanded(!expanded);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+    <header className="py-4 bg-black sm:py-6">
+      <div className="px-4 mx-auto max-w-[90%] sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          <div className="shrink-0">
+            <a href="#" title="" className="flex">
+              <h1 className="text-2xl font-semibold text-white">Jarvis</h1>
+            </a>
+          </div>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
+          <div className="flex md:hidden">
+            <button
+              type="button"
+              className="text-white"
+              onClick={toggleMenu}
+              aria-expanded={expanded}
             >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
+              {!expanded ? (
+                <svg
+                  className="w-7 h-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-7 h-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          <nav className="hidden md:flex md:items-center md:justify-end md:space-x-12">
+            <a
+              href="#"
+              className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+              Products
+            </a>
+            <a
+              href="#"
+              className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
+            >
+              Features
+            </a>
+            <a
+              href="#"
+              className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
+            >
+              Pricing
+            </a>
+            {session ? (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                onClick={() => {
+                  signOut();
+                }}
+                type="button"
               >
-                {page}
+                Sign Out
               </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
-}
+            ) : (
+              <Link href="/login">
+                Login
+              </Link>
+            )}
+          </nav>
+        </div>
 
-export default ResponsiveAppBar;
+        {expanded && (
+          <nav>
+            <div className="flex flex-col pt-8 pb-4 space-y-6">
+              <a
+                href="#"
+                className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
+              >
+                Products
+              </a>
+              <a
+                href="#"
+                className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
+              >
+                Features
+              </a>
+              <a
+                href="#"
+                className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
+              >
+                Pricing
+              </a>
+              {session ? (
+              <Button
+                onClick={() => {
+                  signOut();
+                }}
+                type="button"
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <Link href = "/login">
+                Login
+              </Link>
+            )}
+            </div>
+          </nav>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;

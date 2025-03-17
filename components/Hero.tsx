@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import {useSession, signIn, signOut} from 'next-auth/react'
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   const [expanded, setExpanded] = useState(false);
+  const { data: session } = useSession();
 
   const toggleMenu = () => {
     setExpanded(!expanded);
@@ -10,52 +13,10 @@ const Hero = () => {
 
   return (
     <div className='mt-3'>
-      <header className="py-4 bg-black sm:py-6">
-        <div className="px-4 mx-auto max-w-[80%] sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="shrink-0">
-              <a href="#" title="" className="flex">
-                <h1 className="text-2xl font-semibold text-white">Jarvis</h1>
-              </a>
-            </div>
-
-            <div className="flex md:hidden">
-              <button type="button" className="text-white" onClick={toggleMenu} aria-expanded={expanded}>
-                {!expanded ? (
-                  <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                ) : (
-                  <svg className="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            <nav className="hidden md:flex md:items-center md:justify-end md:space-x-12">
-              <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Products</a>
-              <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Features</a>
-              <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Pricing</a>
-              <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Support</a>
-            </nav>
-          </div>
-
-          {expanded && (
-            <nav>
-              <div className="flex flex-col pt-8 pb-4 space-y-6">
-                <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Products</a>
-                <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Features</a>
-                <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Pricing</a>
-                <a href="#" className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white">Support</a>
-              </div>
-            </nav>
-          )}
-        </div>
-      </header>
+      
 
       <section className="py-12 bg-black sm:pb-16 lg:pb-20 xl:pb-24 mt-3">
-        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-[80%]">
+        <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-[90%]">
           <div className="relative">
             <div className="lg:w-2/3">
               <p className="text-sm font-normal tracking-widest text-gray-300 uppercase">A Hub for Designers, Developers & Marketers</p>
@@ -68,9 +29,15 @@ const Hero = () => {
               </p>
               <div className="relative inline-flex items-center justify-center mt-8 sm:mt-12 group">
                 <div className="absolute transition-all duration-200 rounded-full -inset-px bg-gradient-to-r from-cyan-500 to-purple-500 group-hover:shadow-lg group-hover:shadow-cyan-500/50"></div>
-                <Link href="/assistant" className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-full" role="button">
-                  Talk to Jarvis
-                </Link>
+                {session ? (
+                  <Link href="/assistant" className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-full" role="button">
+                    Talk to Jarvis
+                  </Link>
+                ) : (
+                  <Link href="/login" className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-full" role="button">
+                    Login to use Jarvis
+                  </Link>
+                )}
               </div>
               <div>
                 <div className="inline-flex items-center pt-6 mt-8 border-t border-gray-800 sm:pt-10 sm:mt-14">
