@@ -15,7 +15,22 @@ const authOptions = {
     
   ],
   secret: process.env.AUTH_SECRET,
-  
+  callbacks: {
+    async session({ session }) {
+      try {
+        await connectDB();
+        const sessionUser = await User.findOne({ email: session.user.email });
+        if (sessionUser) {
+          session.user.id = sessionUser._id;
+        }
+        return session;
+      } catch (error) {
+        console.error(`Error in session callback: ${error.message}`);
+        return session;
+      }
+    },
+    
+  },
 };
 
 const handler = NextAuth(authOptions);
