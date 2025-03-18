@@ -66,7 +66,13 @@ const ChatTranscript: React.FC = () => {
       });
 
       const data = await res.json();
-      setTranscripts(prev => [...prev, { text: data.response, isUser: false }]);
+      const responseText = data.response;
+      setTranscripts(prev => [...prev, { text: responseText, isUser: false }]);
+      
+      // Use text-to-speech to read out the response
+      const utterance = new SpeechSynthesisUtterance(responseText);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
     } catch (error) {
       console.error('Error sending message:', error);
       setTranscripts(prev => [...prev, { text: 'Failed to connect to AI.', isUser: false }]);
