@@ -12,9 +12,17 @@ const handler = NextAuth({
   ],
   callbacks: {
     async session({ session }) {
-
-      const sessionUser = await User.findOne({email: session.user.email})
-      return session;
+      try {
+        await connectDB();
+        const sessionUser = await User.findOne({ email: session.user.email });
+        if (sessionUser) {
+          session.user.id = sessionUser._id;
+        }
+        return session;
+      } catch (error) {
+        console.error(`Error in session callback: ${error.message}`);
+        return session;
+      }
     },
     async signIn({ profile }) {
       console.log(profile);
@@ -23,7 +31,7 @@ const handler = NextAuth({
         const userExist = await User.findOne({ email: profile.email });
 
         if (!userExist) {
-          const user = await User.create({
+          await User.create({
             email: profile.email,
             name: profile.name,
             image: profile.picture,
@@ -31,7 +39,7 @@ const handler = NextAuth({
         }
         return true;
       } catch (error) {
-        console.error(`Error: ${error.message}`);
+        console.error(`Error in signIn callback: ${error.message}`);
         return false;
       }
     },
