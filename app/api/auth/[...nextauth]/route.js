@@ -29,7 +29,25 @@ const authOptions = {
         return session;
       }
     },
-    
+    async signIn({ profile }) {
+      console.log(profile);
+      try {
+        await connectDB();
+        const userExist = await User.findOne({ email: profile.email });
+
+        if (!userExist) {
+          await User.create({
+            email: profile.email,
+            name: profile.name,
+            image: profile.picture,
+          });
+        }
+        return true;
+      } catch (error) {
+        console.error(`Error in signIn callback: ${error.message}`);
+        return false;
+      }
+    },
   },
 };
 
