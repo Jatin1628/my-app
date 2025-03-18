@@ -4,7 +4,9 @@ import { connectDB } from "../../../../utils/database";
 import User from "../../../../models/user.model";
 import mongoose from "mongoose";
 
-
+// Increase the timeout settings for MongoDB connection
+mongoose.set('bufferCommands', false);
+// 30 seconds
 
 const authOptions = {
   providers: [
@@ -12,7 +14,6 @@ const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    
   ],
   secret: process.env.AUTH_SECRET,
   callbacks: {
@@ -21,7 +22,7 @@ const authOptions = {
         await connectDB();
         const sessionUser = await User.findOne({ email: session.user.email });
         if (sessionUser) {
-          session.user.id = sessionUser._id;
+          session.user.id = sessionUser._id.toString();
         }
         return session;
       } catch (error) {
