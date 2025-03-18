@@ -55,19 +55,24 @@ const ChatTranscript: React.FC = () => {
     // Add user's message.
     setTranscripts(prev => [...prev, { text: currentText, isUser: true }]);
     
-    // Simulate AI response. Replace with actual API call if needed.
-    const aiResponse = await fakeAiCall(currentText);
-    setTranscripts(prev => [...prev, { text: aiResponse, isUser: false }]);
-    setCurrentText('');
-  };
+    // Call the API route to get the AI response.
+    try {
+      const res = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: currentText }),
+      });
 
-  // Fake AI call function for simulation.
-  const fakeAiCall = async (message: string): Promise<string> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(`AI Response to: "${message}"`);
-      }, 1000);
-    });
+      const data = await res.json();
+      setTranscripts(prev => [...prev, { text: data.response, isUser: false }]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setTranscripts(prev => [...prev, { text: 'Failed to connect to AI.', isUser: false }]);
+    }
+
+    setCurrentText('');
   };
 
   return (

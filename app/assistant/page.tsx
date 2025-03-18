@@ -11,11 +11,7 @@ import React from "react";
 const page = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  useEffect(() => {
-    if (!session) {
-      router.push("/");
-    }
-  }, [session, router]);
+  
   return (
     <div className="w-[90%] h-screen mx-auto">
       <Navbar />
