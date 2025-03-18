@@ -15,40 +15,7 @@ const authOptions = {
     
   ],
   secret: process.env.AUTH_SECRET,
-  callbacks: {
-    async session({ session }) {
-      try {
-        await connectDB();
-        const sessionUser = await User.findOne({ email: session.user.email });
-        if (sessionUser) {
-          session.user.id = sessionUser._id;
-        }
-        return session;
-      } catch (error) {
-        console.error(`Error in session callback: ${error.message}`);
-        return session;
-      }
-    },
-    async signIn({ profile }) {
-      console.log(profile);
-      try {
-        await connectDB();
-        const userExist = await User.findOne({ email: profile.email });
-
-        if (!userExist) {
-          await User.create({
-            email: profile.email,
-            name: profile.name,
-            image: profile.picture,
-          });
-        }
-        return true;
-      } catch (error) {
-        console.error(`Error in signIn callback: ${error.message}`);
-        return false;
-      }
-    },
-  },
+  
 };
 
 const handler = NextAuth(authOptions);
