@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero';
-
+import {connectDB} from "../utils/database"
 
 const Page = () => {
   const [isClient, setIsClient] = useState(false);
@@ -11,6 +11,7 @@ const Page = () => {
     setIsClient(true);
   }, []);
 
+  const db = connectDB();
 
 
   return (

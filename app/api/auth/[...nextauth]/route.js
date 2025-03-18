@@ -4,9 +4,7 @@ import { connectDB } from "../../../../utils/database";
 import User from "../../../../models/user.model";
 import mongoose from "mongoose";
 
-// Increase the timeout settings for MongoDB connection
-mongoose.set('bufferCommands', false);
-// 30 seconds
+
 
 const authOptions = {
   providers: [
