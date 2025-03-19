@@ -22,6 +22,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "firebase": "^11.4.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.479.0",
     "mongodb": "^6.14.2",
     "mongoose": "^8.12.1",
@@ -37,7 +38,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.12",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4.0.12",
