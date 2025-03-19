@@ -62,7 +62,7 @@ const ChatTranscript: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: currentText }),
+        body: JSON.stringify({ userId: 'unique-user-id', message: currentText }), // Replace 'unique-user-id' with actual user ID
       });
 
       const data = await res.json();
