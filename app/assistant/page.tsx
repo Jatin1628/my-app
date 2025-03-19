@@ -8,15 +8,25 @@ import { useEffect } from "react";
 
 import React from "react";
 
-const page = () => {
-  const { data: session } = useSession();
+const Page = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
-  
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="w-[90%] h-screen mx-auto">
       <Navbar />
       <div>
-        <h1 className="font-semibold text-xl mt-5 m-3">Hello, User</h1>
+        <h1 className="font-semibold text-xl mt-5 m-3">Hello, {session?.user?.name || "User"}</h1>
       </div>
 
       <div className="flex h-full">
@@ -27,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

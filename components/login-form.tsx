@@ -63,19 +63,21 @@ export function LoginForm({
 
   async function verifyOtp() {
     setLoading(true);
-    const res = await fetch('/api/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, otp }),
+    // Call signIn with our credentials provider, passing email, otp, and token
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      otp,
+      token,
     });
-    const data = await res.json();
     setLoading(false);
-    setMessage(data.message);
-    if (res.ok) {
-      setMessageType('success');
-      router.push('/assistant');
+    if (res?.ok) {
+      setMessage("OTP verified successfully. Signing in...");
+      setMessageType("success");
+      router.push("/assistant");
     } else {
-      setMessageType('error');
+      setMessage("Invalid OTP. Please try again.");
+      setMessageType("error");
     }
   }
 

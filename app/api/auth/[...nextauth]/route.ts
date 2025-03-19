@@ -1,18 +1,10 @@
-import NextAuth, { NextAuthOptions, Session } from "next-auth";
+// /api/[...nextauth]/route.ts
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "../../../../lib/dbConnect";
 import User from "../../../../models/user.model";
-
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id?: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-}
+import { verifyOtpToken } from "../../../../lib/otp"; // Your OTP verification function
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -20,44 +12,69 @@ const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
+    CredentialsProvider({
+      name: "OTP",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        otp: { label: "OTP", type: "text" },
+        token: { label: "Token", type: "text" },
+      },
+      async authorize(credentials) {
+        // Check that required credentials are provided
+        if (!credentials?.email || !credentials.otp || !credentials.token) {
+          throw new Error("Missing credentials");
+        }
+
+        // Verify the OTP using your custom function
+        const otpResult = verifyOtpToken(credentials.token, credentials.otp);
+        if (!otpResult.valid) {
+          throw new Error(otpResult.message);
+        }
+
+        // Connect to the database and find or create the user
+        await connectDB();
+        let user = await User.findOne({ email: credentials.email });
+        if (!user) {
+          user = await User.create({ email: credentials.email });
+        }
+
+        // Return the user object for NextAuth to create the session
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name || "",
+          image: user.image || "",
+        };
+      },
+    }),
   ],
   secret: process.env.AUTH_SECRET,
   callbacks: {
-    async session({ session }) {
-      try {
-        await connectDB();
-        // Ensure session.user is defined before proceeding
-        if (session.user?.email) {
-          const sessionUser = await User.findOne({ email: session.user.email }) as { _id: string };
-          if (sessionUser) {
-            session.user.id = sessionUser._id.toString();
-          }
+    async session({ session, token, user }) {
+      await connectDB();
+      // Enrich the session with the user ID from your DB
+      if (session.user?.email) {
+        const sessionUser = await User.findOne({ email: session.user.email });
+        if (sessionUser) {
+          (session.user as { id: string }).id = sessionUser._id.toString();
         }
-        return session;
-      } catch (error: any) {
-        console.error(`Error in session callback: ${error.message}`);
-        return session;
       }
+      return session;
     },
     async signIn({ profile }) {
-      try {
-        await connectDB();
-        // Ensure profile is defined
-        if (profile?.email) {
-          const userExist = await User.findOne({ email: profile.email });
-          if (!userExist) {
-            await User.create({
-              email: profile.email,
-              name: profile.name,
-              image: profile.image,
-            });
-          }
+      await connectDB();
+      // This callback is used by providers such as Google
+      if (profile?.email) {
+        const userExist = await User.findOne({ email: profile.email });
+        if (!userExist) {
+          await User.create({
+            email: profile.email,
+            name: profile.name,
+            image: profile.image,
+          });
         }
-        return true;
-      } catch (error: any) {
-        console.error(`Error in signIn callback: ${error.message}`);
-        return false;
       }
+      return true;
     },
   },
 };
