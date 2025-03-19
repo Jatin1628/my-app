@@ -26,6 +26,7 @@ export function LoginForm({
   const [otp, setOtp] = useState('');
   const [token, setToken] = useState('');
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -51,10 +52,12 @@ export function LoginForm({
     if (res.ok) {
       setToken(data.token);
       setMessage(data.message);
+      setMessageType('success');
       setStep('otp');
       setTimer(30); // Set timer for 30 seconds
     } else {
       setMessage(data.message);
+      setMessageType('error');
     }
   }
 
@@ -69,7 +72,10 @@ export function LoginForm({
     setLoading(false);
     setMessage(data.message);
     if (res.ok) {
+      setMessageType('success');
       router.push('/assistant');
+    } else {
+      setMessageType('error');
     }
   }
 
@@ -85,6 +91,11 @@ export function LoginForm({
                   Login to your Acme Inc account
                 </p>
               </div>
+              {message && (
+                <div className={`text-center ${messageType === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+                  {message}
+                </div>
+              )}
               {step === 'email' && (
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
