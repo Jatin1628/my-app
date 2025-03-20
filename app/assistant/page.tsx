@@ -1,5 +1,6 @@
-"use client"
+"use client";
 import Navbar from "@/components/Navbar";
+import SearchBar from "@/components/SearchBar";
 import ChatTranscript from "@/components/Transcript";
 import VideoComponent from "@/components/VideoComponent";
 import { useSession } from "next-auth/react";
@@ -26,12 +27,19 @@ const Page = () => {
     <div className="w-[90%] h-screen mx-auto">
       <Navbar />
       <div>
-        <h1 className="font-semibold text-xl mt-5 m-3">Hello, {session?.user?.name || "User"}</h1>
+        {/* <h1 className="font-semibold text-xl mt-5 m-3">Hello, {session?.user?.name || "User"}</h1> */}
+      </div>
+      
+      <div className="lg:flex h-full lg:ml-30 lg:w-[90%] mx-auto">
+      
+      <VideoComponent />
+
+      <ChatTranscript />
       </div>
 
-      <div className="flex h-full">
-        <VideoComponent />
-        <ChatTranscript />
+
+      <div className="fixed lg:left-[12%] bottom-5 w-full">
+        <SearchBar />
       </div>
     </div>
   );

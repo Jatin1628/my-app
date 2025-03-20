@@ -82,9 +82,10 @@ const ChatTranscript: React.FC = () => {
   };
 
   return (
-    <div className="w-full mx-auto px-4 lg:px-2 py-2 lg:w-[40%] lg:mt-2">
+    <div className="w-full lg:px-2 py-2 lg:w-[40%] lg:mt-1">
       {/* Transcript Display */}
-      <div className="border h-36 lg:h-[59%] overflow-y-scroll border-gray-300 rounded-lg p-4 text-white">
+      <div className="border h-54 lg:h-[60%] overflow-y-scroll border-gray-300 rounded-lg p-4 text-white">
+        Transcript section (Baad m krunga)
         {transcripts.map((entry, index) => (
           <div key={index} className={`mb-2 flex ${entry.isUser ? 'justify-end' : 'justify-start'}`}>
             <div className={`inline-block p-3 rounded-lg ${entry.isUser ? 'bg-black-100' : 'bg-black-100'}`}>
@@ -94,7 +95,7 @@ const ChatTranscript: React.FC = () => {
         ))}
       </div>
       {/* Input Section */}
-      <div className="mt-4 h-full">
+      {/* <div className="mt-4 h-full">
         <textarea
           className="w-full h-16 lg:h-[16%] overflow-y-scroll p-3 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={currentText}
@@ -116,7 +117,7 @@ const ChatTranscript: React.FC = () => {
             Send
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
