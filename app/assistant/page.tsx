@@ -38,7 +38,7 @@ const Page = () => {
       </div>
 
       <div className="fixed lg:left-[12%] bottom-5 w-full">
-        <SearchBar />
+        {/* <SearchBar /> */}
       </div>
     </div>
   );
