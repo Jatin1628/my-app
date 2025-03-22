@@ -1,10 +1,9 @@
-// /api/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "../../../../lib/dbConnect";
 import User from "../../../../models/user.model";
-import { verifyOtpToken } from "../../../../lib/otp"; // Your OTP verification function
+import { verifyOtpToken } from "../../../../lib/otp";
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -20,25 +19,21 @@ const authOptions: NextAuthOptions = {
         token: { label: "Token", type: "text" },
       },
       async authorize(credentials) {
-        // Check that required credentials are provided
         if (!credentials?.email || !credentials.otp || !credentials.token) {
           throw new Error("Missing credentials");
         }
 
-        // Verify the OTP using your custom function
         const otpResult = verifyOtpToken(credentials.token, credentials.otp);
         if (!otpResult.valid) {
           throw new Error(otpResult.message);
         }
 
-        // Connect to the database and find or create the user
         await connectDB();
         let user = await User.findOne({ email: credentials.email });
         if (!user) {
           user = await User.create({ email: credentials.email });
         }
 
-        // Return the user object for NextAuth to create the session
         return {
           id: user._id.toString(),
           email: user.email,
@@ -52,7 +47,6 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token, user }) {
       await connectDB();
-      // Enrich the session with the user ID from your DB
       if (session.user?.email) {
         const sessionUser = await User.findOne({ email: session.user.email });
         if (sessionUser) {
@@ -63,7 +57,6 @@ const authOptions: NextAuthOptions = {
     },
     async signIn({ profile }) {
       await connectDB();
-      // This callback is used by providers such as Google
       if (profile?.email) {
         const userExist = await User.findOne({ email: profile.email });
         if (!userExist) {

@@ -1,25 +1,23 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Load API Key from environment variables
 const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
+if (!apiKey) {
+  throw new Error('GEMINI_API_KEY is not set in environment variables.');
+}
 
-// Model Configuration
+const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
 const generationConfig = {
-  temperature: 0.7, // Adjusted for more human-like responses
-  topP: 0.9,
-  topK: 40,
-  maxOutputTokens: 150, // Limit the response length
-  responseMimeType: 'text/plain',
+  temperature: 0.9,
+  topP: 0.95,
+  topK: 50,
+  maxOutputTokens: 300,
 };
 
-// In-memory store for user conversation history
 const userHistories = {};
 
-// POST API Handler
 export async function POST(request) {
   try {
     const { userId, message } = await request.json();
@@ -28,35 +26,34 @@ export async function POST(request) {
       return NextResponse.json({ error: 'User ID and message are required.' }, { status: 400 });
     }
 
-    // Initialize user history if not present
     if (!userHistories[userId]) {
       userHistories[userId] = [];
     }
 
-    // Add user message to history
-    userHistories[userId].push({ role: 'user', content: message });
+    userHistories[userId].push({ role: 'user', parts: [{ text: String(message) }] });
 
-    // Transform history into the format expected by the Gemini API
-    const formattedHistory = userHistories[userId].map((entry) => ({
-      author: entry.role === 'user' ? 'user' : 'bot',
-      parts: [entry.content],
+    const formattedHistory = userHistories[userId].map(entry => ({
+      role: entry.role, 
+      parts: entry.parts.map(part => ({ text: String(part.text) }))
     }));
 
-    // Ensure the first entry in the history has the role 'user'
-    if (formattedHistory.length === 0 || formattedHistory[0].author !== 'user') {
-      console.error('Invalid history format:', formattedHistory);
-      return NextResponse.json({ error: 'Conversation history must start with a user message.' }, { status: 400 });
-    }
+    const chatSession = model.startChat({
+      generationConfig,
+      history: formattedHistory,
+    });
 
-    // Start Chat Session with formatted history
-    const chatSession = model.startChat({ generationConfig, history: formattedHistory });
+    const result = await chatSession.sendMessage(message);
 
-    // Send message to Gemini API
-    const result = await chatSession.sendMessage(`Please respond like a human and keep it concise: ${message}`);
-    const responseText = await result.response.text();
+    // 🔍 Debugging: Log the entire API response
+    console.log("Full Gemini API Response:", JSON.stringify(result, null, 2));
 
-    // Add AI response to history
-    userHistories[userId].push({ role: 'ai', content: responseText });
+    // ✅ Ensure correct response extraction
+    const responseText = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't process that.";
+
+    // 🔥 Debugging: Check if responseText is extracted properly
+    console.log("Extracted Response Text:", responseText);
+
+    userHistories[userId].push({ role: 'model', parts: [{ text: responseText }] });
 
     return NextResponse.json({ response: responseText });
   } catch (error) {

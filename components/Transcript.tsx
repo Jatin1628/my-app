@@ -95,7 +95,7 @@ const ChatTranscript: React.FC = () => {
         ))}
       </div>
       {/* Input Section */}
-      {/* <div className="mt-4 h-full">
+      <div className="mt-4 h-full">
         <textarea
           className="w-full h-16 lg:h-[16%] overflow-y-scroll p-3 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={currentText}
@@ -117,7 +117,7 @@ const ChatTranscript: React.FC = () => {
             Send
           </button>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
