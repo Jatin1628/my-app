@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import SearchBar from "@/components/SearchBar";
+// import SearchBar from "@/components/SearchBar";
 import ChatTranscript from "@/components/Transcript";
 import VideoComponent from "@/components/VideoComponent";
 import { useSession } from "next-auth/react";
@@ -38,7 +38,7 @@ const Page = () => {
       </div>
 
       <div className="fixed lg:left-[12%] bottom-5 w-full">
-        <SearchBar userId={userId} /> {/* Pass userId to SearchBar */}
+        <SearchBar />
       </div>
     </div>
   );
