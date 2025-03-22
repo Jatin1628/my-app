@@ -27,7 +27,7 @@ export default function Fox(props) {
 
   return (
     <group ref={group} {...props} dispose={null}>
-      <primitive object={scene} />
+      <primitive object={scene} scale={[0.035, 0.035, 0.035]} />
     </group>
   );
 }
