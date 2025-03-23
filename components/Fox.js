@@ -6,7 +6,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 
 export default function Fox(props) {
   const group = useRef();
-  const gltf = useGLTF("/models/Fox.glb");
+  const gltf = useGLTF("/models/human.glb");
   const { animations, scene } = gltf; // try using gltf.scene
   const { actions } = useAnimations(animations, group);
 
@@ -27,9 +27,9 @@ export default function Fox(props) {
 
   return (
     <group ref={group} {...props} dispose={null}>
-      <primitive object={scene} scale={[0.035, 0.035, 0.035]} />
+      <primitive object={scene} scale={[100, 100, 100]} />
     </group>
   );
 }
 
-useGLTF.preload("../public/models/Fox.glb");
+useGLTF.preload("../public/models/human.glb");

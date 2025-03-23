@@ -23,7 +23,7 @@ const Page = () => {
     return <div>Loading...</div>;
   }
 
-  const userId = session?.user?.id; // Extract userId from session
+  // const userId = session?.user?.id; // Extract userId from session
 
   return (
     <div className="w-[90%] h-screen mx-auto">
@@ -34,7 +34,8 @@ const Page = () => {
       
       <div className="lg:flex h-full lg:ml-30 lg:w-[90%] mx-auto">
         <VideoComponent />
-        <ChatTranscript userId={userId} /> {/* Pass userId to ChatTranscript */}
+        <ChatTranscript  /> 
+        {/* userId={userId} */}
       </div>
 
       <div className="fixed lg:left-[12%] bottom-5 w-full">

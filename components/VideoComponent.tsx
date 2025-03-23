@@ -14,7 +14,7 @@ const VideoComponent = () => {
        <div style={{ width: "100%", height: "100%" }}>
       <Canvas
         shadows
-        camera={{ position: [0, 2, 5], fov: 50 }}
+        camera={{ position: [2, 1, 5], fov: 50 }}
       >
         {/* Basic lighting */}
         <ambientLight intensity={0.5} />
@@ -22,7 +22,7 @@ const VideoComponent = () => {
 
         {/* Wrap Fox in Suspense to wait for asset loading */}
         <Suspense fallback={null}>
-          <Fox position={[0.06, -1.2, 0]} />
+          <Fox position={[0, -15, 0]} />
         </Suspense>
 
         {/* Enable user interaction */}
