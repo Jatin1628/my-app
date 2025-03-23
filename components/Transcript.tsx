@@ -21,7 +21,8 @@ const ChatTranscript: React.FC = () => {
   useEffect(() => {
     // Initialize SpeechRecognition (using webkitSpeechRecognition for broader support)
     const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       console.warn("Speech Recognition API is not supported in this browser.");
       return;
@@ -69,7 +70,9 @@ const ChatTranscript: React.FC = () => {
     setCameraActive((prev) => !prev);
     if (!cameraActive) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
@@ -109,7 +112,10 @@ const ChatTranscript: React.FC = () => {
     if (finalTranscript.trim() === "") return;
 
     // Add user's message to transcript
-    setTranscripts((prev) => [...prev, { text: finalTranscript, isUser: true }]);
+    setTranscripts((prev) => [
+      ...prev,
+      { text: finalTranscript, isUser: true },
+    ]);
     transcriptRef.current = ""; // Reset the transcript ref
 
     try {
@@ -165,31 +171,15 @@ const ChatTranscript: React.FC = () => {
         {transcripts.map((entry, index) => (
           <div
             key={index}
-            className={`mb-2 flex ${entry.isUser ? "justify-end" : "justify-start"}`}
+            className={`mb-2 flex ${
+              entry.isUser ? "justify-end" : "justify-start"
+            }`}
           >
             <div className="inline-block p-3 rounded-lg bg-black-100">
               {entry.text}
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Buttons to clear transcript and stop AI response */}
-      <div className="flex justify-between mt-2">
-        <button
-          type="button"
-          onClick={clearTranscript}
-          className="px-4 py-2 bg-red-500 text-white rounded"
-        >
-          Clear Transcript
-        </button>
-        <button
-          type="button"
-          onClick={stopAIResponse}
-          className="px-4 py-2 bg-yellow-500 text-white rounded"
-        >
-          Stop AI Response
-        </button>
       </div>
 
       {/* Input and Controls */}
@@ -217,7 +207,9 @@ const ChatTranscript: React.FC = () => {
                 type="button"
                 onClick={toggleRecording}
                 className={`p-2 rounded-full border ${
-                  isRecording ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+                  isRecording
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
                 }`}
               >
                 <Mic className="h-5 w-5" />
@@ -226,12 +218,33 @@ const ChatTranscript: React.FC = () => {
                 type="button"
                 onClick={handleCameraToggle}
                 className={`p-2 rounded-full border ${
-                  cameraActive ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+                  cameraActive
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700"
                 }`}
               >
                 <Video className="h-5 w-5" />
               </button>
             </div>
+
+            {/* Buttons to clear transcript and stop AI response */}
+            <div className="flex justify-between gap-2">
+              <button
+                type="button"
+                onClick={clearTranscript}
+                className="p-2 rounded-full border bg-white text-gray-700 font-semibold"
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onClick={stopAIResponse}
+                className="p-2 rounded-full border bg-white text-gray-700 font-semibold"
+              >
+                Stop
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={handleSubmit}
