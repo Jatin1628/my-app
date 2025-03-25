@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Mic, Video, Send } from "lucide-react";
+import axios from "axios";
 
 interface TranscriptEntry {
   text: string;
@@ -141,6 +142,13 @@ const ChatTranscript: React.FC = () => {
       const utterance = new SpeechSynthesisUtterance(responseText);
       utterance.lang = "en-US";
       window.speechSynthesis.speak(utterance);
+
+      // Save the chat session
+      await axios.post("/api/chat-session", {
+        userId: "unique-user-id", // Replace with the actual user ID if needed
+        sessionId: "unique-session-id", // Replace with the actual session ID if needed
+        messages: transcripts.map((entry) => entry.text),
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       setTranscripts((prev) => [
