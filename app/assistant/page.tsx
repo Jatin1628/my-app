@@ -35,7 +35,7 @@ const Page = () => {
       <div className="lg:flex h-full lg:ml-30 lg:w-[90%] mx-auto">
         <VideoComponent />
         <ChatTranscript />
-        <ChatHistory userId={userId || ''} />
+        {/* <ChatHistory userId={userId || ''} /> */}
       </div>
 
       <div className="fixed lg:left-[12%] bottom-5 w-full">

@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IChatSession extends Document {
-  userId: string;
+  userId: mongoose.Types.ObjectId;
   sessionId: string;
   messages: string[];
   createdAt: Date;
@@ -9,7 +9,7 @@ interface IChatSession extends Document {
 }
 
 const ChatSessionSchema: Schema = new Schema({
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   sessionId: { type: String, required: true },
   messages: { type: [String], required: true },
   createdAt: { type: Date, default: Date.now },
