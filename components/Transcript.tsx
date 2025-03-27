@@ -141,6 +141,8 @@ const ChatTranscript: React.FC = () => {
       // Use text-to-speech to read out the response
       const utterance = new SpeechSynthesisUtterance(responseText);
       utterance.lang = "en-US";
+      utterance.rate =1.5; // Adjust this value for faster or slower speech (default is 1.0)
+      utterance.pitch = 1.0; // Optional: Adjust pitch for better clarity
       window.speechSynthesis.speak(utterance);
 
       // Save the chat session
