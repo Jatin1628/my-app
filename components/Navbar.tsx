@@ -65,7 +65,7 @@ const Navbar = () => {
           </div>
 
           <nav className="hidden md:flex md:items-center md:justify-end md:space-x-12">
-            <a
+            {/* <a
               href="#"
               className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
             >
@@ -82,7 +82,7 @@ const Navbar = () => {
               className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
             >
               Pricing
-            </a>
+            </a> */}
             {session ? (
               <Button
                 onClick={() => {
@@ -103,7 +103,7 @@ const Navbar = () => {
         {expanded && (
           <nav>
             <div className="flex flex-col pt-8 pb-4 space-y-6">
-              <a
+              {/* <a
                 href="#"
                 className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
               >
@@ -120,7 +120,7 @@ const Navbar = () => {
                 className="text-base font-normal text-gray-400 transition-all duration-200 hover:text-white"
               >
                 Pricing
-              </a>
+              </a> */}
               {session ? (
               <Button
                 onClick={() => {

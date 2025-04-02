@@ -1,4 +1,3 @@
-// /app/api/chat-session/route.ts
 import { NextResponse } from "next/server";
 import dbConnect from "../../../lib/dbConnect";
 import ChatSession from "../../../models/chatSession";
@@ -32,14 +31,16 @@ export async function POST(req: Request) {
     if (!userId || !sessionId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+    // Convert userId to ObjectId
+    const userObjectId = new Types.ObjectId(userId);
     // Update or create the session
     const session = await ChatSession.findOneAndUpdate(
-      { userId, sessionId },
+      { userId: userObjectId, sessionId },
       { $set: { messages, updatedAt: new Date() } },
       { upsert: true, new: true }
     );
     // Enforce a maximum of 10 sessions per user:
-    const sessions = await ChatSession.find({ userId: new Types.ObjectId(userId) })
+    const sessions = await ChatSession.find({ userId: userObjectId })
       .sort({ updatedAt: -1 })
       .exec();
     if (sessions.length > 10) {

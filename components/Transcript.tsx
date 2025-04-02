@@ -147,7 +147,7 @@ const ChatTranscript: React.FC = () => {
 
       // Save the chat session
       await axios.post("/api/chat-session", {
-        userId: "unique-user-id", // Replace with the actual user ID if needed
+        userId: "604c8b6f1c4ae81234567890", // Replace with the actual user ID
         sessionId: "unique-session-id", // Replace with the actual session ID if needed
         messages: transcripts.map((entry) => entry.text),
       });
