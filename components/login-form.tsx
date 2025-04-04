@@ -23,11 +23,12 @@ export function LoginForm({
   }, [session, router]);
 
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
   const [token, setToken] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
-  const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [step, setStep] = useState<'email' | 'otp' | 'name'>('email');
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
 
@@ -66,6 +67,7 @@ export function LoginForm({
     // Call signIn with our credentials provider, passing email, otp, and token
     const res = await signIn("credentials", {
       redirect: false,
+      name,
       email,
       otp,
       token,
@@ -98,7 +100,9 @@ export function LoginForm({
                   {message}
                 </div>
               )}
+             
               {step === 'email' && (
+                <>
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -110,6 +114,17 @@ export function LoginForm({
                     required
                   />
                 </div>
+                <div className="grid gap-3">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="name"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div></>
               )}
               {step === 'otp' && (
                 <div className="grid gap-3">

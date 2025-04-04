@@ -6,7 +6,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 
 export default function Fox(props) {
   const group = useRef();
-  const gltf = useGLTF("/models/human.glb");
+  const gltf = useGLTF("/models/girlfriend.glb");
   const { animations, scene } = gltf; // try using gltf.scene
   const { actions } = useAnimations(animations, group);
 
@@ -32,4 +32,4 @@ export default function Fox(props) {
   );
 }
 
-useGLTF.preload("../public/models/human.glb");
+useGLTF.preload("../public/models/girlfriend.glb");

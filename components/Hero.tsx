@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {useSession, signIn, signOut} from 'next-auth/react'
 import { Button } from "@/components/ui/button";
+import Lisa from "../public/Lisa.png"
 
 const Hero = () => {
   const [expanded, setExpanded] = useState(false);
@@ -44,7 +45,7 @@ const Hero = () => {
               </div>
             </div>
             <div className="hidden lg:flex mt-8 md:absolute md:mt-0 md:top-32 lg:top-0 md:right-0">
-              <img className="w-full max-w-xs mx-auto lg:max-w-lg xl:max-w-xl" src="https://landingfoliocom.imgix.net/store/collection/dusk/images/hero/1/3d-illustration.png" alt="" />
+              <img className="w-full max-w-xs mx-auto lg:max-w-lg xl:max-w-xl" src={Lisa.src} alt="" />
             </div>
           </div>
         </div>
