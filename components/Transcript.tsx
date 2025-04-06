@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Mic, Video, Send } from "lucide-react";
 import axios from "axios";
+import { useChat } from "../src/hooks/useChat";
 
 interface TranscriptEntry {
   text: string;
@@ -13,23 +14,23 @@ const ChatTranscript: React.FC = () => {
   const [currentText, setCurrentText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  // Use a ref to store the transcript (avoiding stale closures)
   const transcriptRef = useRef("");
   const [cameraActive, setCameraActive] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Get the chat function from the chat hook
+  const { chat } = useChat();
+
+  // Initialize the Speech Recognition API
   useEffect(() => {
-    // Initialize SpeechRecognition (using webkitSpeechRecognition for broader support)
     const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       console.warn("Speech Recognition API is not supported in this browser.");
       return;
     }
     const recognition = new SpeechRecognition();
-    // Use non-continuous mode so that recognition stops automatically after a pause
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = "en-US";
@@ -45,7 +46,6 @@ const ChatTranscript: React.FC = () => {
 
     recognition.onend = () => {
       setIsRecording(false);
-      // If there is text captured, automatically send it once recognition stops
       if (transcriptRef.current.trim() !== "") {
         handleSubmit();
       }
@@ -54,7 +54,7 @@ const ChatTranscript: React.FC = () => {
     recognitionRef.current = recognition;
   }, []);
 
-  // Adjust the textarea height based on content
+  // Adjust the height of the textarea dynamically
   const adjustTextareaHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -71,9 +71,7 @@ const ChatTranscript: React.FC = () => {
     setCameraActive((prev) => !prev);
     if (!cameraActive) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
@@ -91,11 +89,9 @@ const ChatTranscript: React.FC = () => {
     }
   };
 
-  // Start or stop speech recording
+  // Toggle recording on/off
   const toggleRecording = () => {
-    // Stop the current AI response
     window.speechSynthesis.cancel();
-
     if (isRecording) {
       recognitionRef.current?.stop();
       setIsRecording(false);
@@ -107,48 +103,47 @@ const ChatTranscript: React.FC = () => {
     }
   };
 
-  // Submit the message and call the API
+  // Handle sending the user input to Gemini and update the chat context
   const handleSubmit = async () => {
     const finalTranscript = transcriptRef.current;
     if (finalTranscript.trim() === "") return;
 
-    // Add user's message to transcript
-    setTranscripts((prev) => [
-      ...prev,
-      { text: finalTranscript, isUser: true },
-    ]);
-    transcriptRef.current = ""; // Reset the transcript ref
+    setTranscripts((prev) => [...prev, { text: finalTranscript, isUser: true }]);
+    transcriptRef.current = "";
 
     try {
       const res = await fetch("/api/gemini", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "unique-user-id", // Replace with the actual user ID if needed
+          userId: "unique-user-id",
           message: finalTranscript,
         }),
       });
-
       const data = await res.json();
       const responseText = data.response;
-      setTranscripts((prev) => [
-        ...prev,
-        { text: responseText, isUser: false },
-      ]);
 
-      // Use text-to-speech to read out the response
+      // Update the chat context with Gemini's response.
+      // We include the animation "Talking_0", along with other properties.
+      chat({
+        animation: "Talking_0",
+        facialExpression: "default",
+        lipsync: data.lipsync, // assuming Gemini returns lipsync cues
+        audio: data.audio,     // assuming Gemini returns a base64-encoded audio string
+      });
+
+      setTranscripts((prev) => [...prev, { text: responseText, isUser: false }]);
+
+      // Trigger text-to-speech
       const utterance = new SpeechSynthesisUtterance(responseText);
       utterance.lang = "en-US";
-      utterance.rate =1.5; // Adjust this value for faster or slower speech (default is 1.0)
-      utterance.pitch = 1.0; // Optional: Adjust pitch for better clarity
+      utterance.rate = 1.5;
+      utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
 
-      // Save the chat session
       await axios.post("/api/chat-session", {
-        userId: "604c8b6f1c4ae81234567890", // Replace with the actual user ID
-        sessionId: "unique-session-id", // Replace with the actual session ID if needed
+        userId: "604c8b6f1c4ae81234567890",
+        sessionId: "unique-session-id",
         messages: transcripts.map((entry) => entry.text),
       });
     } catch (error) {
@@ -158,18 +153,17 @@ const ChatTranscript: React.FC = () => {
         { text: "Failed to connect to AI.", isUser: false },
       ]);
     }
-
     setCurrentText("");
   };
 
-  // Clear the transcript
+  // Clear the transcript display
   const clearTranscript = () => {
     setTranscripts([]);
     setCurrentText("");
     transcriptRef.current = "";
   };
 
-  // Stop the current instance of the AI response
+  // Stop any ongoing speech synthesis
   const stopAIResponse = () => {
     window.speechSynthesis.cancel();
   };
@@ -179,12 +173,7 @@ const ChatTranscript: React.FC = () => {
       {/* Transcript Display */}
       <div className="border h-54 lg:h-[60%] overflow-y-scroll border-gray-300 rounded-lg p-4 text-white">
         {transcripts.map((entry, index) => (
-          <div
-            key={index}
-            className={`mb-2 flex ${
-              entry.isUser ? "justify-end" : "justify-start"
-            }`}
-          >
+          <div key={index} className={`mb-2 flex ${entry.isUser ? "justify-end" : "justify-start"}`}>
             <div className="inline-block p-3 rounded-lg bg-black-100">
               {entry.text}
             </div>
@@ -217,9 +206,7 @@ const ChatTranscript: React.FC = () => {
                 type="button"
                 onClick={toggleRecording}
                 className={`p-2 rounded-full border ${
-                  isRecording
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-700"
+                  isRecording ? "bg-blue-500 text-white" : "bg-white text-gray-700"
                 }`}
               >
                 <Mic className="h-5 w-5" />
@@ -228,9 +215,7 @@ const ChatTranscript: React.FC = () => {
                 type="button"
                 onClick={handleCameraToggle}
                 className={`p-2 rounded-full border ${
-                  cameraActive
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-700"
+                  cameraActive ? "bg-blue-500 text-white" : "bg-white text-gray-700"
                 }`}
               >
                 <Video className="h-5 w-5" />

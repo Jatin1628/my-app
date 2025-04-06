@@ -1,37 +1,18 @@
-// pages/index.js
-"use client"; // This ensures that the entire page renders on the client
-
-import React, { Suspense } from "react";
+"use client";
+import React from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import Fox from "../components/Fox";
-
-
+import { Experience } from "./Experience";
 
 const VideoComponent = () => {
   return (
-    <div className='border border-gray-200 h-[30%] w-full rounded-lg  my-3 p-2 lg:w-[50%] lg:h-[58%]'>
-       <div style={{ width: "100%", height: "100%" }}>
-      <Canvas
-        shadows
-        camera={{ position: [0, 25, 90], fov: 50 }}
-      >
-        {/* Basic lighting */}
-        <ambientLight intensity={1} />
-        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-
-        {/* Wrap Fox in Suspense to wait for asset loading */}
-        <Suspense fallback={null}>
-          <Fox position={[0, -145, 40]} />
-        </Suspense>
-
-        {/* Enable user interaction */}
-        <OrbitControls />
-      </Canvas>
+    <div className="border border-gray-200 h-[30%] w-full rounded-lg my-3 p-2 lg:w-[50%] lg:h-[58%]">
+      <div style={{ width: "100%", height: "100%" }}>
+        <Canvas shadows camera={{ position: [0, 0, 1], fov: 25 }}>
+          <Experience />
+        </Canvas>
+      </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default VideoComponent
-
+export default VideoComponent;
