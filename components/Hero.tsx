@@ -22,7 +22,7 @@ const Hero = () => {
             <div className="lg:w-2/3">
               <p className="text-sm font-normal tracking-widest text-gray-300 uppercase">Your Personal Virtual AI Assistant</p>
               <h1 className="mt-6 text-4xl font-normal text-white sm:mt-10 sm:text-5xl lg:text-6xl xl:text-8xl">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">Jarvis AI</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">Wanda AI</span>
                 Virtual Assistant
               </h1>
               <p className="max-w-lg mt-4 text-xl font-normal text-gray-400 sm:mt-8">
@@ -32,11 +32,11 @@ const Hero = () => {
                 <div className="absolute transition-all duration-200 rounded-full -inset-px bg-gradient-to-r from-cyan-500 to-purple-500 group-hover:shadow-lg group-hover:shadow-cyan-500/50"></div>
                 {session ? (
                   <Link href="/assistant" className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-full" role="button">
-                    Talk to Jarvis
+                    Talk to Wanda
                   </Link>
                 ) : (
                   <Link href="/login" className="relative inline-flex items-center justify-center px-8 py-3 text-base font-normal text-white bg-black border border-transparent rounded-full" role="button">
-                    Login to use Jarvis
+                    Login to use Wanda
                   </Link>
                 )}
               </div>

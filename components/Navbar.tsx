@@ -19,7 +19,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <div className="shrink-0">
             <a href="#" title="" className="flex">
-              <h1 className="text-2xl font-semibold text-white">Jarvis</h1>
+              <h1 className="text-2xl font-semibold text-white">Wanda</h1>
             </a>
           </div>
 
